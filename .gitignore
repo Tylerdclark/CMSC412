@@ -1,0 +1,10 @@
+
+.DS_Store
+
+.idea/
+
+hw2/cmake-build-debug/
+
+hw2/build/
+
+hw3/cmake-build-debug/
