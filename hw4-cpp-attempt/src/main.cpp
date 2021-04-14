@@ -30,8 +30,6 @@ int main() {
         cout << "What is the path to file?\n";
         cin >> fileName;
         b.readFile(fileName);
-        b.method();
-        b.display();
         menuPrompt(quit);
     }
     return 0;
