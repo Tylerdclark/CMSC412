@@ -12,3 +12,7 @@ hw3/cmake-build-debug/
 hw4/cmake-build-debug/
 
 hw4/cmake-build-debug-coverage/
+
+hw4-cpp-attempt/cmake-build-debug/
+
+hw4-cpp-attempt/cmake-build-debug-coverage/
