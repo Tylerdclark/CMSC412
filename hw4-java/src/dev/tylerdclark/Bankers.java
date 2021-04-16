@@ -57,7 +57,7 @@ public class Bankers {
      * @param prc_ct number of processes
      * @return difference of the matrices
      */
-    static int[][] subtract(int[][] minuend, int[][] subtrahend, int res_ct, int prc_ct) {
+    private static int[][] subtract(int[][] minuend, int[][] subtrahend, int res_ct, int prc_ct) {
         int i, j;
         int[][] difference = new int[prc_ct][res_ct];
 
