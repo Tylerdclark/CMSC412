@@ -259,6 +259,9 @@ public class Menu {
                 }
 
                 //Creates new file
+
+                fileName = (encrypt) ? "E-"+ fileName : "D-" + fileName.substring(2);
+
                 File outputFile = new File(path + "/" + fileName);
 
                 try (FileOutputStream stream = new FileOutputStream(outputFile)) {
