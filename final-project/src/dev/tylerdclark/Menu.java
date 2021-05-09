@@ -5,6 +5,7 @@
 
 package dev.tylerdclark;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -194,19 +195,100 @@ public class Menu {
 
     private void simulateFIFO(){
         if (setupSimulation()){
-            System.out.println(Arrays.deepToString(matrix));
-        }
 
+            ArrayList<Integer> memory = new ArrayList<>(physicalFrames);
+            int faultCt = 0;
+
+            printMatrix();
+            pressAnyKeyToContinue();
+            for (int i = 0; i < referenceString.length; i++) {
+                int currentVirtFrame = referenceString[i];
+                if (!memory.contains(currentVirtFrame)){
+                    if(memory.size() < physicalFrames){
+                        memory.add(i,currentVirtFrame);
+                        //set the corresponding fault row to true
+                        matrix[physicalFrames+2][i] = 1;
+                        faultCt++;
+                    }else{ //memory is full
+
+                        //make the 0th element in memory the victim
+                        matrix[physicalFrames+1][i] = memory.get(0);
+                        memory.set(0, referenceString[i]);
+                        //set the corresponding fault row to true
+                        matrix[i][physicalFrames+2] = 1;
+                        faultCt++;
+                    }
+                }else{
+                    System.out.println(currentVirtFrame+ " in memory.");
+                }
+
+                for (int j = 0; j < memory.size(); j++) {
+                    matrix[j+1][i] = memory.get(j);
+                }
+                printMatrix();
+                pressAnyKeyToContinue();
+            }
+
+        }
     }
+
+
+
 
     private boolean setupSimulation(){
         if (referenceString == null || physicalFrames == 0){
             System.out.println("You need to have a valid reference string and set a physical frame between 1 and 8");
             return false;
         }else{ // +2 because of the victim row and page fault row
-            matrix = new int[physicalFrames+2][referenceString.length];
+            matrix = new int[physicalFrames+3][referenceString.length];
+            for (int[] row: matrix){
+                Arrays.fill(row, -1); //fill with -1's
+            }//fill the first row with the reference string
+            System.arraycopy(referenceString, 0, matrix[0], 0, referenceString.length);
             return true;
         }
+    }
 
+    public void printMatrix(){ //add 3 for header row, victim row and fault row
+        int rowCount = physicalFrames + 3;
+
+        // for each row
+        for (int i = 0; i < rowCount; i++) {
+
+            if (i == 0){
+                System.out.print("Reference String:\t");
+            }else if (i == rowCount - 1){
+                System.out.print("Page Faults:\t\t");
+            }else if(i == rowCount - 2){
+                System.out.print("Victim frames\t\t");
+            } else {
+                System.out.print("Physical Frame "+ (i-1)+ ":\t");
+            }
+
+            // for each column
+            for (int j = 0; j < referenceString.length; j++) {
+                //if it is -1, just print a empty space
+                if(i==rowCount-1){
+                    //If there is a 1 in the fault row, print a F
+                    System.out.print((matrix[i][j] == 1) ? "F\t" : "" + "\t");
+                }else{
+                    //If there is a -1, print nothing, else the contents
+                    System.out.print((matrix[i][j] == -1) ? "" : matrix[i][j] + "\t");
+                }
+
+            }
+            System.out.println();
+        }
+    }
+
+    private void pressAnyKeyToContinue()
+    {
+        System.out.println("Press Enter key to continue...");
+        try {
+            System.in.read();
+        }
+        catch(IOException e){
+            System.err.println("IO problem with System.in.read()");
+        }
     }
 }
