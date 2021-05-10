@@ -198,26 +198,29 @@ public class Menu {
 
             ArrayList<Integer> memory = new ArrayList<>(physicalFrames);
             int faultCt = 0;
+            int currentFrame = 0;
 
             printMatrix();
             pressAnyKeyToContinue();
-            for (int i = 0; i < referenceString.length; i++) {
+            for (int i = 0; i < referenceString.length; ++i) {
                 int currentVirtFrame = referenceString[i];
                 if (!memory.contains(currentVirtFrame)){
                     if(memory.size() < physicalFrames){
-                        memory.add(i,currentVirtFrame);
+                        memory.add(currentFrame,currentVirtFrame);
+                        ++currentFrame;
                         //set the corresponding fault row to true
-                        matrix[physicalFrames+2][i] = 1;
-                        faultCt++;
                     }else{ //memory is full
+                        if(currentFrame >=physicalFrames){
+                            currentFrame = 0;
+                        }
 
                         //make the 0th element in memory the victim
-                        matrix[physicalFrames+1][i] = memory.get(0);
-                        memory.set(0, referenceString[i]);
+                        matrix[physicalFrames+1][i] = memory.get(currentFrame);
+                        memory.set(currentFrame, referenceString[i]);
                         //set the corresponding fault row to true
-                        matrix[i][physicalFrames+2] = 1;
-                        faultCt++;
                     }
+                    matrix[physicalFrames+2][i] = 1;
+                    faultCt++;
                 }else{
                     System.out.println(currentVirtFrame+ " in memory.");
                 }
@@ -225,10 +228,12 @@ public class Menu {
                 for (int j = 0; j < memory.size(); j++) {
                     matrix[j+1][i] = memory.get(j);
                 }
+                System.out.println("Memory: "+memory);
                 printMatrix();
                 pressAnyKeyToContinue();
             }
-
+            System.out.println("Table finished.");
+            System.out.println("Faults: "+ faultCt);
         }
     }
 
